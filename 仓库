@@ -1,0 +1,435 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>//需要用到strcmp函数 
+#include<windows.h>
+#define LEN 15//名称和编号的最大字符数 
+#define N 50//最大货物数量 
+
+int n=0, t=1;//n代表当前货物数量,t用来控制整个程序的执行，以及程序的退出; 
+
+//函数声明
+void increase();//增加货物信息  
+void seek();//查找货物信息
+void de();//出库货物信息 
+void save();//保存文件
+void present();//显示当前信息
+void modify();//修改货物信息   
+void flush();//读取文件信息 
+void sort();//排序货物信息 
+void tuichu();//退出函数 
+
+struct warehouses 
+{
+	char  gno[LEN];  //货物编号 
+	char  gname[LEN];//货物名称 
+	int   gquty;    //货物数量 
+	float gprice;   //货物单价 
+}ware[N];
+
+int main()
+{
+	int num;
+	while (t)//t是全局变量，用tuichu函数来控制循环是否继续 
+	{
+		system("color 4E");
+		printf("\n\n");
+	    printf("*****************************************************\n");
+        printf("-----------------------o(>v<)o-----------------------\n");
+	    printf("*                 仓库信息管理系统                  *\n");
+	    printf("-----------------------------------------------------\n");
+	    printf("********************系统功能菜单*********************\n");
+	    printf("-----------------------o(OvO)o-----------------------\n");
+	    printf("*****************************************************\n");
+	    printf("**    1、增加货物信息     *   2、查询货物信息      **\n");
+	    printf("*****************************************************\n");
+	    printf("**    3、货物出库信息     *   4、保存货物信息      **\n");
+	    printf("*****************************************************\n");
+ 	    printf("**    5、显示当前信息     *   6、修改货物信息      **\n");
+	    printf("*****************************************************\n");
+	    printf("**    7、读取文件信息     *   8、排序货物信息      **\n");
+	    printf("*****************************************************\n");
+	    printf("**    9、退出仓库系统     *                        **\n");
+	    printf("*****************************************************\n");
+	    printf("----------------------o(≧v≦)o----------------------\n"); 
+	    printf("\n");
+		printf("您好，请输入菜单编号：");
+		scanf("%d", &num);
+		switch (num)
+		{
+		case 1: increase(); break;
+		case 2: seek(); break;
+		case 3: de(); break;
+		case 4: save(); break;
+		case 5: present(); break;
+		case 6: modify(); break;
+		case 7: flush(); break;
+		case 8: sort();break;
+		case 9: tuichu(); break;
+		default:printf("输入有误，请重新输入！");
+		}
+
+
+	}
+
+	system("pause");//使系统暂停一下 "请按任意键继续……"
+	return 0;
+}
+
+//入库函数 
+void increase()
+{
+	int i = n, j, flag, a,b,c,m = 0;//i代表增加货物信息过程中任意时刻的货物数量 
+	printf("\n请输入待增加的货物总种数：\n");
+	scanf("%d", &m);
+	if (m > 0) {
+		do {
+			flag = 1;
+			while (flag)
+			{
+				flag = 0;
+				printf("请输入货物的编号：\n");
+				scanf("%s", ware[i].gno);
+				for (j = 0; j < i; j++) {
+					if (strcmp(ware[i].gno, ware[j].gno) == 0) {
+						printf("该编号已经存在！\n");
+						printf("请输入要增加的库存数量：");
+						scanf("%d",&a);
+						b=ware[j].gquty;
+						c=a+b,
+					    ware[j].gquty=c;
+						goto tui;
+					}
+				}
+			}
+			printf("请输入货物名称:\n");
+			scanf("%s", ware[i].gname);
+			printf("请输入货物数量:\n");
+			scanf("%d", &ware[i].gquty);
+			printf("请输入货物的单价:\n");
+			scanf("%f", &ware[i].gprice);
+			printf("*******************\n");
+			i++;
+		} while (i < n + m);	
+	}
+	n += m;// 添加完成，系统数量n的值也要增加 
+	printf("添加完成！！！\n");
+	tui:
+	system("pause");
+}
+//查找函数 
+void seek()
+{
+	int i, num, flag;
+	char s1[LEN];
+	printf("*****************************\n");
+	printf("**-------1.按遍号查询------**\n");
+	printf("**-------2.按名称查询------**\n");
+	printf("**-------3.退出本菜单------**\n");
+	printf("*****************************\n");
+	while (1)
+	{
+		flag = 0;
+		printf("请输入子菜单：");
+		scanf("%d", &num);
+		switch (num)
+		{
+		case 1:
+			printf("请输入需要查找货物的编号：\n");
+			scanf("%s", s1);
+			for (i = 0; i < n; i++)
+			{
+				if (strcmp(ware[i].gno, s1) == 0)
+				{
+					flag = 1;
+					printf("编号\t\t名称\t\t数量\t\t单价\n");
+					printf("%s\t\t%s\t\t%d\t\t%f\n",ware[i].gno,ware[i].gname,ware[i].gquty,ware[i].gprice);
+				}
+			}break;
+		case 2:
+			printf("请输入需要查找货物的名称：\n");
+			scanf("%s", s1);
+			for (i = 0; i < n; i++)
+			{
+				if (strcmp(ware[i].gname, s1) == 0)
+				{
+					flag = 1;
+					printf("编号\t\t名称\t\t数量\t\t单价\n");
+					printf("%s\t\t%s\t\t%d\t\t%f\n",ware[i].gno,ware[i].gname,ware[i].gquty,ware[i].gprice);
+				}
+			}break;
+		case 3: return;
+		default: printf("请在1--3之间输入\n");
+		}
+		if (flag == 0)
+			printf("找不到该货物!\n请重新输入！");
+	}
+}
+//出库函数 
+void de()
+{
+	int i, j,z,c, flag,a=0;
+	char s1[LEN];
+	printf("请输入需要出库的货物编号：\n");
+	scanf("%s", &s1);
+	flag = 0;
+	for (i = 0; i < n+1; i++)
+	{
+		if (strcmp(s1, ware[i].gno) == 0)
+             { 
+		  printf("请输入要出库的数量：\n");      	
+		  scanf("%d",&j);
+		  z= ware[i].gquty;
+		  c= z - j;
+		  ware[i].gquty = c;
+		     break;
+			 } 	  
+     } 
+	   if( ware[i].gquty == 0 )
+	  	{
+	        for(i=0;i<n;i++)
+			 {	
+			 ware[i]=ware[i+1];  
+			flag = 1;
+			 }
+	     n--;
+		} 
+	if (flag == 0)
+	{
+		printf("出库成功！\n");
+	}
+
+	if (flag == 1)
+	{
+		printf("库存清零，已删除!\n");
+	}
+	system("pause");
+}
+//保存文件函数 
+void save()
+{
+	int i;
+	FILE* fp;//声明，声明fp是指针，用来指向FILE类型的对象 r:只读;w：读写 
+	char filename[LEN + 1];
+	printf("请输入要保存的文件名：\n");
+	scanf("%s", filename);
+	if ((fp = fopen(filename, "w")) == NULL)//文件指针名=fopen（文件名,使用文件方式）。
+	{
+		printf("打开文件失败！\n");
+		exit(0);
+	}
+	for (i = 0; i < n; i++)
+		if (fwrite(&ware[i], sizeof(struct warehouses), 1, fp) != 1)
+			printf("保存失败！！\n");
+	printf("保存成功！！！\n");
+	fclose(fp);
+	system("pause");
+}
+//显示函数 
+void present()
+{
+	int i;
+
+	if (n == 0)
+	{
+		printf("您好，现在没有货物信息，请先增加货物信息或者读取后再来试试!\n");
+	}
+	else
+	{
+		printf("现在共有%d种货物：\n", n);
+	    printf("编号\t\t名称\t\t数量\t\t单价\n");
+		for (i = 0; i < n; i++)
+		{
+			printf("%s\t\t%s\t\t%d\t\t%f\n",ware[i].gno,ware[i].gname,ware[i].gquty,ware[i].gprice);
+		}
+	}
+
+	system("pause");
+}
+//修改函数 
+void modify()
+{
+	int i, flag;
+	char ID[LEN], name[LEN];
+	int quty,xz;
+	int price;
+	printf("*****************************\n");
+	printf("**-------1.按编号查询------**\n");
+	printf("**-------2.按名称查询------**\n");
+	printf("**-------3.退出本菜单------**\n");
+	printf("*****************************\n");
+	printf("请输入子菜单：");
+	scanf("%d",&xz); 
+    switch(xz){
+	case 1://按编号查询然后修改 
+	printf("请输入需要修改的货物编号：\n");
+	scanf("%s",ID);
+	while (1)
+	{
+		flag = 0;
+		for (i = 0; i < n; i++)
+		{
+			if (strcmp(ID, ware[i].gno) == 0)
+			{
+				flag = 1;
+				int num;//用于switch函数的子菜单 
+				printf("***************************************************\n");
+				printf("*----1.修改名称--------  -  -----2.修改数量-------*\n");
+				printf("*----3.修改单价--------  -  -----4.退出菜单-------*\n");
+				printf("***************************************************\n\n");
+				printf("请输入子菜单：");
+				scanf("%d", &num);
+				switch (num)
+				{
+				case 1:
+					printf("请输入新的名称:\n");
+					scanf("%s", &name);
+					strcpy(ware[i].gname, name); break;
+				case 2:
+					printf("请输入新的数量:\n");
+					scanf("%d", &quty);
+					ware[i].gquty = quty; break;
+				case 3:
+					printf("请输入新的单价:\n");
+					scanf("%d", &price);
+					ware[i].gprice = price; break;
+				case 4:
+					return; break;
+				default:
+					printf("请在1--4之间选择！\n");
+				}
+				if (num > 0 && num < 4)
+					printf("修改成功，记得保存哟！！！\n");
+				break;	
+			}
+		}
+		if (flag == 0)
+		{
+			printf("没有找到该货物，请重新输入需要修改信息的货物编号：\n");
+			scanf("%s",ID);
+		}
+	}
+	system("pause");
+	case 2://按名称查询然后修改 
+	printf("请输入需要修改的货物名称：\n");
+	scanf("%s",name);
+	while (1)
+	{
+		flag = 0;
+		for (i = 0; i < n; i++)
+		{
+			if (strcmp(name, ware[i].gname) == 0)
+			{
+				flag = 1;
+				int num;//用于switch函数的子菜单 
+				printf("***************************************************\n");
+				printf("*----1.修改名称--------  -  -----2.修改数量-------*\n");
+				printf("*----3.修改单价--------  -  -----4.退出菜单-------*\n");
+				printf("***************************************************\n\n");
+				printf("请输入子菜单：");
+				scanf("%d", &num);
+				switch (num)
+				{
+				case 1:
+					printf("请输入新的名称:\n");
+					scanf("%s", &name);
+					strcpy(ware[i].gname, name); break;
+				case 2:
+					printf("请输入新的数量:\n");
+					scanf("%d", &quty);
+					ware[i].gquty = quty; break;
+				case 3:
+					printf("请输入新的单价:\n");
+					scanf("%d", &price);
+					ware[i].gprice = price; break;
+				case 4:
+					return; break;
+				default:
+					printf("请在1--4之间选择！\n");
+				}
+				if (num > 0 && num < 4)
+					printf("修改成功，记得保存哟！！！\n");
+				break;	
+			}
+		}
+		if (flag == 0)
+		{
+			printf("没有找到该货物，请重新输入需要修改信息的货物名称：\n");
+			scanf("%s",name);
+		}
+	}
+	system("pause");
+	}
+}
+//读取函数 
+void flush()
+{
+	int i, k = 0;//k代表读取过程中货物数量 
+	FILE* fp;
+	char filename[LEN + 1];
+	printf("请输入需要读取的文件名：\n");
+	getchar();
+	gets(filename);
+	if ((fp = fopen(filename, "r")) == NULL)//打开文件 
+	{
+		printf("打开文件失败！\n");
+		exit(0);
+	}
+	for (i = 0; i < N; i++)//N是最大的货物数量，可在程序开头进行更改 
+	{
+		if (fread(&ware[i], sizeof(struct warehouses), 1, fp) == 1)//fread(数据在内存的位置，数据长度，数据个数，文件指针) 
+			k++;//记录货物数量 
+	}
+	n = k;// 把k的值给n 
+	if (k == 0)
+		printf("读取失败！！！\n");
+	else
+		printf("读取成功！！！\n");
+	fclose(fp);//关闭一个流，把缓冲区内最后剩余的数据输出到磁盘文件中，并释放文件指针和有关的缓冲区。
+	system("pause");
+
+}
+//退出函数 
+void tuichu()
+{
+	int h;//控制是否确认退出 
+	printf("即将退出，确认请按1，取消请按0\n");
+	scanf("%d", &h);
+	if (h == 1)
+	{
+		t = 0;//t是main函数中while函数是否继续执行的控制条件，是一个全局变量，程序开头已经定义并且赋值位 1
+		printf("成功退出，感谢使用！\n");
+	}
+	if (h == 0)
+	{
+		printf("退出已取消！\n");
+		system("pause");
+	}
+}	
+//排序函数
+void sort()
+{ 
+ struct warehouses temp;
+ int i,j;
+ for(i=0;i<n-1;i++)
+ 	{
+  for(j=0;j<n-1;j++)
+    {
+  	if(ware[j].gprice<ware[j+1].gprice)
+  	  {
+	   temp=ware[j];ware[j]=ware[j+1];ware[j+1]=temp;
+	  }  
+    }
+	} 
+   printf("\t\t排序完的商品信息为：\n");
+   printf("\t\t编号\t\t名称\t\t库存\t\t单价\n");
+   for(j=0;j<n;j++){
+     printf("\t\t%s\t\t%s\t\t%d\t\t%f\n",ware[j].gno,ware[j].gname,ware[j].gquty,ware[j].gprice);
+   	 printf("\n");
+                   }
+   system("pause");	
+}	
+
+
+
+	
+
